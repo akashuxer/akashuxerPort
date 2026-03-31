@@ -5,5 +5,6 @@
  */
 export const inViewOptions = {
   once: true,
-  margin: "160px 0px 160px 0px",
+  /** Wider vertical margin so sections resolve & animate a bit before they enter the fold. */
+  margin: "220px 0px 220px 0px",
 } as const;

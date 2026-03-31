@@ -66,18 +66,18 @@ export function Work() {
     <section
       id="work"
       ref={ref}
-      className="scroll-mt-24 bg-[var(--muted)]/25 px-6 py-20 md:px-8 md:py-28"
+      className="scroll-mt-24 bg-[var(--muted)]/25 px-6 py-24 md:px-8 md:py-32"
     >
       <div className="mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="flex flex-col justify-between gap-6 md:flex-row md:items-end"
+          className="flex flex-col justify-between gap-10 md:flex-row md:items-end md:gap-12"
         >
-          <div>
+          <div className="max-w-2xl">
             <motion.p
-              className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--accent)]"
+              className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--accent)]"
               initial={{ opacity: 0, x: -10 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.45 }}
@@ -85,7 +85,7 @@ export function Work() {
               Selected work
             </motion.p>
             <motion.h2
-              className="font-[family-name:var(--font-display)] mt-3 max-w-xl text-3xl font-semibold tracking-tight text-[var(--foreground)] md:text-4xl"
+              className="font-[family-name:var(--font-display)] mt-4 text-3xl font-semibold leading-[1.15] tracking-tight text-[var(--foreground)] md:text-4xl lg:text-[2.5rem]"
               initial={{ opacity: 0, y: 14 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.08 }}
@@ -94,7 +94,7 @@ export function Work() {
             </motion.h2>
           </div>
           <motion.p
-            className="max-w-sm text-sm text-[var(--foreground-muted)]"
+            className="max-w-md text-base leading-relaxed text-[var(--foreground-muted)] md:text-lg"
             initial={{ opacity: 0, y: 10 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.45, delay: 0.15 }}
@@ -104,7 +104,7 @@ export function Work() {
           </motion.p>
         </motion.div>
 
-        <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10">
           {projects.map((proj, i) => (
             <motion.article
               key={proj.title}
@@ -122,7 +122,7 @@ export function Work() {
                 className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${proj.accent} opacity-50 transition-opacity duration-500 group-hover:opacity-100 dark:opacity-35`}
               />
               <motion.div
-                className="relative min-h-[220px] w-full overflow-hidden border-b border-[var(--border)]/80 bg-[var(--muted)]/40 md:min-h-[280px]"
+                className="relative min-h-[240px] w-full overflow-hidden border-b border-[var(--border)]/80 bg-[var(--muted)]/40 md:min-h-[300px]"
                 whileHover={reduce ? undefined : { scale: 1.01 }}
                 transition={{ type: "spring", stiffness: 380, damping: 28 }}
               >
@@ -152,25 +152,25 @@ export function Work() {
                   />
                 )}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-xs font-medium uppercase tracking-[0.3em] text-[var(--foreground-muted)]">
+                  <span className="text-sm font-medium uppercase tracking-[0.25em] text-[var(--foreground-muted)]">
                     Preview
                   </span>
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--card)] via-transparent to-transparent opacity-80" />
               </motion.div>
 
-              <div className="relative flex flex-1 flex-col p-6 md:p-8">
-                <p className="text-xs font-medium text-[var(--foreground-muted)]">
+              <div className="relative flex flex-1 flex-col p-7 md:p-9">
+                <p className="text-sm font-medium text-[var(--foreground-muted)]">
                   {proj.org}
                 </p>
-                <h3 className="font-[family-name:var(--font-display)] mt-2 text-xl font-semibold text-[var(--foreground)] md:text-2xl">
+                <h3 className="font-[family-name:var(--font-display)] mt-3 text-xl font-semibold leading-snug text-[var(--foreground)] md:text-2xl">
                   {proj.title}
                 </h3>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-[var(--foreground-muted)]">
+                <p className="mt-4 flex-1 text-base leading-relaxed text-[var(--foreground-muted)] md:text-[17px] md:leading-[1.65]">
                   {proj.summary}
                 </p>
                 <motion.ul
-                  className="mt-6 flex flex-wrap gap-2"
+                  className="mt-8 flex flex-wrap gap-2.5"
                   variants={tagContainer}
                   initial="hidden"
                   animate={inView ? "show" : "hidden"}
@@ -179,7 +179,7 @@ export function Work() {
                     <motion.li
                       key={t}
                       variants={tagItem}
-                      className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--background)]/60 px-3 py-1 text-xs font-medium text-[var(--foreground-muted)] backdrop-blur-sm"
+                      className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--background)]/60 px-3.5 py-1.5 text-sm font-medium text-[var(--foreground-muted)] backdrop-blur-sm"
                       whileHover={
                         reduce ? undefined : { scale: 1.04, y: -2 }
                       }

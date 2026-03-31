@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import type { NavKey } from "@/hooks/use-active-nav";
 import { useActiveNav } from "@/hooks/use-active-nav";
@@ -78,12 +78,29 @@ function NavAnchor({
 
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const activeNav = useActiveNav();
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 12);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const glass = scrolled || open;
 
   return (
     <motion.header
       data-no-ripple
-      className="fixed top-0 right-0 left-0 z-50 border-b border-[var(--border)]/60 bg-[var(--background)]/70 backdrop-blur-xl"
+      className={cn(
+        "fixed top-0 right-0 left-0 z-50 transition-[background-color,backdrop-filter,border-color,box-shadow] duration-300 ease-out",
+        glass
+          ? "border-b border-[var(--border)]/30 bg-[var(--background)]/28 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.18)] backdrop-blur-3xl backdrop-saturate-[1.65] dark:bg-[var(--background)]/22 dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] dark:border-[var(--border)]/28 supports-[backdrop-filter]:bg-[var(--background)]/20"
+          : "border-b border-transparent bg-transparent shadow-none backdrop-blur-none backdrop-saturate-100"
+      )}
       initial={{ y: -24, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
