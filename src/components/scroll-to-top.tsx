@@ -40,9 +40,9 @@ export function ScrollToTop() {
         onClick={goTop}
         aria-label="Scroll to top"
         className={cn(
-          "pointer-events-auto flex h-11 w-11 items-center justify-center rounded-[var(--radius)]",
+          "pointer-events-auto flex h-11 w-11 touch-manipulation items-center justify-center rounded-[var(--radius)] select-none",
           "border border-[var(--border)]/80 bg-[var(--background)]/85 text-[var(--foreground)] shadow-[0_8px_30px_-12px_rgba(0,0,0,0.25)] backdrop-blur-md",
-          "transition-colors hover:border-[var(--accent)]/35 hover:bg-[var(--muted)]/60",
+          "transition-colors active:scale-[0.96] hover:border-[var(--accent)]/35 hover:bg-[var(--muted)]/60",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]",
           "dark:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.5)]"
         )}

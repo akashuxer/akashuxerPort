@@ -85,7 +85,12 @@ export function BackgroundRippleEffect({
       if (e.pointerType === "mouse" && e.button !== 0) return;
       const el = eventTargetElement(e);
       /* Text nodes don't pass instanceof Element — without this, header clicks still fired ripples and stole the first interaction (e.g. theme toggle). */
-      if (el?.closest("[data-no-ripple]") || el?.closest("header")) return;
+      if (
+        el?.closest("[data-no-ripple]") ||
+        el?.closest("[data-theme-toggle]") ||
+        el?.closest("header")
+      )
+        return;
       triggerRipple(e.clientX, e.clientY);
     };
 

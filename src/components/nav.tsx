@@ -40,10 +40,10 @@ function NavAnchor({
     <motion.a
       href={href}
       className={cn(
-        "relative inline-block rounded-[var(--radius)] px-1.5 py-1 transition-colors",
+        "relative inline-block touch-manipulation rounded-[var(--radius)] px-2 py-2 transition-colors md:px-1.5 md:py-1",
         active
           ? "font-medium text-[var(--foreground)] md:bg-transparent"
-          : "text-[var(--foreground-muted)] hover:text-[var(--foreground)]",
+          : "text-[var(--foreground-muted)] hover:text-[var(--foreground)] active:bg-[var(--muted)]/50 md:active:bg-transparent",
         active && "bg-[var(--muted)]/45 md:bg-transparent",
         className
       )}
@@ -109,7 +109,7 @@ export function Nav() {
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between md:h-16">
         <Link
           href="/"
-          className="font-[family-name:var(--font-display)] text-lg font-semibold tracking-tight"
+          className="touch-manipulation rounded-[var(--radius)] py-1 font-[family-name:var(--font-display)] text-lg font-semibold tracking-tight outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-[var(--accent)]/50"
         >
           <LogoAkashWord />
           <span className="bg-gradient-to-r from-[var(--accent)] to-[var(--accent-secondary)] bg-clip-text text-transparent">
@@ -137,7 +137,8 @@ export function Nav() {
         <div className="flex items-center gap-2 md:gap-3">
           <motion.button
             type="button"
-            className="relative flex h-9 w-9 items-center justify-center rounded-[var(--radius)] border border-[var(--border)] bg-[var(--muted)]/40 md:hidden"
+            data-no-ripple
+            className="relative flex h-11 w-11 touch-manipulation items-center justify-center rounded-[var(--radius)] border border-[var(--border)] bg-[var(--muted)]/40 select-none active:scale-[0.96] md:hidden"
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
             aria-label={open ? "Close menu" : "Open menu"}
@@ -194,7 +195,7 @@ export function Nav() {
                   <NavAnchor
                     href={l.href}
                     active={activeNav === l.navKey}
-                    className="block rounded-lg px-3 py-3 text-sm hover:bg-[var(--muted)]"
+                    className="block touch-manipulation rounded-lg px-3 py-3 text-sm hover:bg-[var(--muted)] active:bg-[var(--muted)]/80"
                     onNavigate={() => setOpen(false)}
                   >
                     {l.label}

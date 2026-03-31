@@ -10,6 +10,17 @@ const subscribe = () => () => {};
 const getClientSnapshot = () => true;
 const getServerSnapshot = () => false;
 
+function subscribeHtmlDarkClass(onStoreChange: () => void) {
+  const el = document.documentElement;
+  const mo = new MutationObserver(onStoreChange);
+  mo.observe(el, { attributes: true, attributeFilter: ["class"] });
+  return () => mo.disconnect();
+}
+
+function getIsDarkSnapshot() {
+  return document.documentElement.classList.contains("dark");
+}
+
 function usePrefersReducedMotion() {
   return useSyncExternalStore(
     (onStoreChange) => {
@@ -27,7 +38,7 @@ export type AnimatedThemeTogglerProps = {
 };
 
 export function AnimatedThemeToggler({ className }: AnimatedThemeTogglerProps) {
-  const { resolvedTheme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const mounted = useSyncExternalStore(
     subscribe,
@@ -36,33 +47,45 @@ export function AnimatedThemeToggler({ className }: AnimatedThemeTogglerProps) {
   );
   const prefersReducedMotion = usePrefersReducedMotion();
 
-  const darkMode = resolvedTheme === "dark";
+  /** Mirrors `<html class="dark">` so icons never lag stale React state (fixes flaky toggles). */
+  const darkMode = useSyncExternalStore(
+    subscribeHtmlDarkClass,
+    getIsDarkSnapshot,
+    () => false
+  );
 
   /**
    * Diagonal reveal runs in CSS on ::view-transition-new(root) — no await transition.ready,
    * so the animation starts as soon as the browser begins the view transition (fixes perceived lag).
+   * Next theme is read from the DOM at click time so rapid taps / view transitions never use a stale mode.
    */
   const onToggle = useCallback(() => {
     if (!buttonRef.current) return;
-    const next = darkMode ? "light" : "dark";
+    const next = getIsDarkSnapshot() ? "light" : "dark";
+
+    const run = () => {
+      setTheme(next);
+    };
 
     if (prefersReducedMotion || typeof document.startViewTransition !== "function") {
-      setTheme(next);
+      run();
       return;
     }
 
-    document.startViewTransition(() => {
-      flushSync(() => {
-        setTheme(next);
+    try {
+      document.startViewTransition(() => {
+        flushSync(run);
       });
-    });
-  }, [darkMode, prefersReducedMotion, setTheme]);
+    } catch {
+      run();
+    }
+  }, [prefersReducedMotion, setTheme]);
 
   if (!mounted) {
     return (
       <div
         className={cn(
-          "h-9 w-9 shrink-0 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--muted)]/30",
+          "h-11 w-11 shrink-0 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--muted)]/30",
           className
         )}
         aria-hidden
@@ -76,10 +99,11 @@ export function AnimatedThemeToggler({ className }: AnimatedThemeTogglerProps) {
       type="button"
       data-cursor="pointer"
       data-no-ripple
+      data-theme-toggle
       onClick={onToggle}
       aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
       className={cn(
-        "relative flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius)] border border-[var(--border)] bg-[var(--muted)]/40 text-[var(--foreground)] outline-none backdrop-blur-sm transition-colors hover:bg-[var(--muted)] focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]",
+        "relative flex h-11 w-11 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-[var(--radius)] border border-[var(--border)] bg-[var(--muted)]/40 text-[var(--foreground)] outline-none backdrop-blur-sm transition-colors select-none hover:bg-[var(--muted)] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]",
         className
       )}
     >
