@@ -4,22 +4,12 @@ import { useCallback, useRef, useSyncExternalStore } from "react";
 import { flushSync } from "react-dom";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useHtmlIsDark } from "@/hooks/use-html-is-dark";
 import { cn } from "@/lib/utils";
 
 const subscribe = () => () => {};
 const getClientSnapshot = () => true;
 const getServerSnapshot = () => false;
-
-function subscribeHtmlDarkClass(onStoreChange: () => void) {
-  const el = document.documentElement;
-  const mo = new MutationObserver(onStoreChange);
-  mo.observe(el, { attributes: true, attributeFilter: ["class"] });
-  return () => mo.disconnect();
-}
-
-function getIsDarkSnapshot() {
-  return document.documentElement.classList.contains("dark");
-}
 
 function usePrefersReducedMotion() {
   return useSyncExternalStore(
@@ -48,11 +38,7 @@ export function AnimatedThemeToggler({ className }: AnimatedThemeTogglerProps) {
   const prefersReducedMotion = usePrefersReducedMotion();
 
   /** Mirrors `<html class="dark">` so icons never lag stale React state (fixes flaky toggles). */
-  const darkMode = useSyncExternalStore(
-    subscribeHtmlDarkClass,
-    getIsDarkSnapshot,
-    () => false
-  );
+  const darkMode = useHtmlIsDark();
 
   /**
    * Diagonal reveal runs in CSS on ::view-transition-new(root) — no await transition.ready,
@@ -61,7 +47,9 @@ export function AnimatedThemeToggler({ className }: AnimatedThemeTogglerProps) {
    */
   const onToggle = useCallback(() => {
     if (!buttonRef.current) return;
-    const next = getIsDarkSnapshot() ? "light" : "dark";
+    const next = document.documentElement.classList.contains("dark")
+      ? "light"
+      : "dark";
 
     const run = () => {
       setTheme(next);
@@ -85,7 +73,7 @@ export function AnimatedThemeToggler({ className }: AnimatedThemeTogglerProps) {
     return (
       <div
         className={cn(
-          "h-11 w-11 shrink-0 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--muted)]/30",
+          "h-11 w-11 shrink-0 rounded-[var(--radius)] bg-transparent",
           className
         )}
         aria-hidden
@@ -103,7 +91,7 @@ export function AnimatedThemeToggler({ className }: AnimatedThemeTogglerProps) {
       onClick={onToggle}
       aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
       className={cn(
-        "relative flex h-11 w-11 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-[var(--radius)] border border-[var(--border)] bg-[var(--muted)]/40 text-[var(--foreground)] outline-none backdrop-blur-sm transition-colors select-none hover:bg-[var(--muted)] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]",
+        "relative flex h-11 w-11 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-[var(--radius)] border border-transparent bg-transparent text-[var(--foreground)] outline-none transition-colors select-none hover:bg-[var(--muted)]/35 active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]",
         className
       )}
     >

@@ -641,11 +641,30 @@ export function HeroParticleOrb({
       parallaxTargetRef.current.y = 0;
       if (!reduce) breakTargetRef.current = 0;
     };
+    /** Touch/pen: no reliable hover — break on contact like desktop hover. */
+    const onPointerDown = (ev: PointerEvent) => {
+      if (reduce) return;
+      if (ev.pointerType === "mouse" && ev.button !== 0) return;
+      if (ev.pointerType === "touch" || ev.pointerType === "pen") {
+        breakTargetRef.current = 1;
+      }
+    };
+    const onPointerUpOrCancel = (ev: PointerEvent) => {
+      if (reduce) return;
+      if (ev.pointerType === "touch" || ev.pointerType === "pen") {
+        breakTargetRef.current = 0;
+        parallaxTargetRef.current.x = 0;
+        parallaxTargetRef.current.y = 0;
+      }
+    };
 
     if (el && !reduce) {
       el.addEventListener("pointermove", onPointerMove, { passive: true });
       el.addEventListener("pointerenter", onPointerEnter);
       el.addEventListener("pointerleave", onPointerLeave);
+      el.addEventListener("pointerdown", onPointerDown, { passive: true });
+      el.addEventListener("pointerup", onPointerUpOrCancel, { passive: true });
+      el.addEventListener("pointercancel", onPointerUpOrCancel, { passive: true });
     }
 
     if (reduce) {
@@ -658,6 +677,9 @@ export function HeroParticleOrb({
         el?.removeEventListener("pointermove", onPointerMove);
         el?.removeEventListener("pointerenter", onPointerEnter);
         el?.removeEventListener("pointerleave", onPointerLeave);
+        el?.removeEventListener("pointerdown", onPointerDown);
+        el?.removeEventListener("pointerup", onPointerUpOrCancel);
+        el?.removeEventListener("pointercancel", onPointerUpOrCancel);
       };
     }
 
@@ -670,6 +692,9 @@ export function HeroParticleOrb({
       el?.removeEventListener("pointermove", onPointerMove);
       el?.removeEventListener("pointerenter", onPointerEnter);
       el?.removeEventListener("pointerleave", onPointerLeave);
+      el?.removeEventListener("pointerdown", onPointerDown);
+      el?.removeEventListener("pointerup", onPointerUpOrCancel);
+      el?.removeEventListener("pointercancel", onPointerUpOrCancel);
     };
   }, [drawFrame, loop, readThemeColors, reduce]);
 
@@ -677,6 +702,7 @@ export function HeroParticleOrb({
     <div
       ref={containerRef}
       className={className}
+      style={{ touchAction: "manipulation" }}
       aria-hidden
     >
       <canvas

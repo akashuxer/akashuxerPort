@@ -9,6 +9,7 @@ import {
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import type { NavKey } from "@/hooks/use-active-nav";
@@ -128,7 +129,11 @@ function MobileBottomItem({
 }
 
 export function Nav() {
+  const pathname = usePathname();
+  const reduceMotion = Boolean(useReducedMotion());
   const [scrolled, setScrolled] = useState(false);
+  /** Below `md`, top bar stays glassy even at scroll top (mobile polish). */
+  const [narrowViewport, setNarrowViewport] = useState(false);
   const activeNav = useActiveNav();
 
   useEffect(() => {
@@ -140,7 +145,15 @@ export function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const glass = scrolled;
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setNarrowViewport(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  const glass = scrolled || narrowViewport;
 
   return (
     <>
@@ -161,31 +174,44 @@ export function Nav() {
             <Link
               href="/"
               className="touch-manipulation rounded-[var(--radius)] py-1 font-[family-name:var(--font-display)] text-lg font-semibold tracking-tight outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-[var(--accent)]/50"
+              onClick={(e) => {
+                if (pathname !== "/") return;
+                e.preventDefault();
+                window.scrollTo({
+                  top: 0,
+                  behavior: reduceMotion ? "auto" : "smooth",
+                });
+                window.history.replaceState(null, "", "/");
+              }}
             >
               <LogoAkashWord />
               <span className="bg-gradient-to-r from-[var(--accent)] to-[var(--accent-secondary)] bg-clip-text text-transparent">
                 Uxer
               </span>
             </Link>
-            <ul className="hidden items-center gap-2.5 text-[12px] font-medium text-[var(--foreground-muted)] md:flex md:gap-3 lg:gap-4 lg:text-sm">
-              {links.map((l, i) => (
-                <motion.li
-                  key={l.href}
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 + i * 0.05, duration: 0.4 }}
-                >
-                  <NavAnchor
-                    href={l.href}
-                    active={activeNav === l.navKey}
-                    className="lg:whitespace-nowrap"
+            <div className="hidden items-center md:flex md:gap-4 lg:gap-5">
+              <ul className="flex items-center gap-2.5 text-[12px] font-medium text-[var(--foreground-muted)] md:gap-3 lg:gap-4 lg:text-sm">
+                {links.map((l, i) => (
+                  <motion.li
+                    key={l.href}
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 + i * 0.05, duration: 0.4 }}
                   >
-                    {l.label}
-                  </NavAnchor>
-                </motion.li>
-              ))}
-            </ul>
-            <div className="hidden md:flex md:items-center">
+                    <NavAnchor
+                      href={l.href}
+                      active={activeNav === l.navKey}
+                      className="lg:whitespace-nowrap"
+                    >
+                      {l.label}
+                    </NavAnchor>
+                  </motion.li>
+                ))}
+              </ul>
+              <span
+                className="h-5 w-px shrink-0 bg-[var(--border)]/70 dark:bg-[var(--border)]/50"
+                aria-hidden
+              />
               <AnimatedThemeToggler />
             </div>
           </div>
@@ -212,8 +238,11 @@ export function Nav() {
               active={activeNav === item.navKey}
             />
           ))}
-          <div className="flex shrink-0 items-center justify-center pl-0.5">
-            <AnimatedThemeToggler className="border-[var(--border)]/50 bg-[var(--muted)]/35 hover:bg-[var(--muted)]/55" />
+          <div className="flex min-h-[3.25rem] shrink-0 flex-col items-center justify-center gap-0.5 px-0.5 pt-0.5">
+            <AnimatedThemeToggler />
+            <span className="text-center text-[10px] font-medium leading-tight tracking-tight text-[var(--foreground-muted)]">
+              Theme
+            </span>
           </div>
         </div>
       </nav>

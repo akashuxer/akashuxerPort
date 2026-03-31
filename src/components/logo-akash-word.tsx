@@ -1,22 +1,20 @@
 "use client";
 
-import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
+import { useHtmlIsDark } from "@/hooks/use-html-is-dark";
 
 /**
- * “akash” in pure black (light theme) / white (dark theme).
- * Uses next-themes `resolvedTheme` — not Tailwind `dark:` — so OS color scheme
- * cannot force white when the app theme is light.
+ * “akash” is black in light mode and white in dark mode, driven by `<html class="dark">`
+ * so it always matches the real theme (not lagging `resolvedTheme`).
  */
 export function LogoAkashWord({ className }: { className?: string }) {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
+  const isDark = useHtmlIsDark();
 
   return (
     <span
       suppressHydrationWarning
       className={cn(
-        isDark ? "text-[#ffffff]" : "text-[#000000]",
+        isDark ? "text-white" : "text-black",
         className
       )}
     >

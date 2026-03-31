@@ -17,17 +17,17 @@ const SECTION_MAP: { id: string; key: NavKey }[] = [
 
 /**
  * Picks the nav key for the section intersecting a horizontal band below the header
- * (~35% viewport). Hero (above #work) counts as Work.
+ * (~35% viewport). Hero (above #work) has no active item — Work only when #work is in view.
  */
-export function useActiveNav(): NavKey {
-  const [active, setActive] = useState<NavKey>("work");
+export function useActiveNav(): NavKey | null {
+  const [active, setActive] = useState<NavKey | null>(null);
 
   useEffect(() => {
     const compute = () => {
       const marker = window.scrollY + window.innerHeight * 0.35;
       const workSection = document.getElementById("work");
       if (workSection && marker < workSection.offsetTop) {
-        setActive("work");
+        setActive(null);
         return;
       }
 
@@ -49,6 +49,8 @@ export function useActiveNav(): NavKey {
           return;
         }
       }
+
+      setActive(null);
     };
 
     compute();

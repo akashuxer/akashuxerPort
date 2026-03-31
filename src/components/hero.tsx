@@ -8,7 +8,6 @@ import {
 } from "framer-motion";
 import { useRef } from "react";
 import { HeroParticleOrb } from "./hero-particle-orb";
-import { Magnetic } from "./magnetic";
 
 const container = {
   hidden: { opacity: 0 },
@@ -135,23 +134,19 @@ export function Hero() {
           variants={item}
           className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center"
         >
-          <Magnetic
+          <a
             href="#work"
-            className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-[var(--radius)] bg-[var(--foreground)] px-8 text-sm font-semibold text-[var(--background)]"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            className="group relative inline-flex h-12 min-h-[48px] items-center justify-center overflow-hidden rounded-[var(--radius)] bg-[var(--foreground)] px-8 text-sm font-semibold text-[var(--background)] shadow-sm transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px hover:shadow-md active:translate-y-0 active:scale-[0.99] active:shadow-sm dark:hover:shadow-[0_8px_28px_-10px_rgba(0,0,0,0.65)]"
           >
-            <span className="absolute inset-0 translate-y-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-secondary)] transition-transform duration-300 ease-out group-hover:translate-y-0" />
+            <span className="absolute inset-0 translate-y-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-secondary)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0" />
             <span className="relative z-10">View selected work</span>
-          </Magnetic>
-          <motion.a
+          </a>
+          <a
             href="#contact"
-            className="inline-flex h-12 items-center justify-center rounded-[var(--radius)] border border-[var(--border)] bg-[var(--muted)]/30 px-8 text-sm font-medium text-[var(--foreground)] backdrop-blur-sm transition-colors hover:border-[var(--accent)]/40 hover:bg-[var(--muted)]/60"
-            whileHover={{ scale: 1.03, x: 4 }}
-            whileTap={{ scale: 0.98 }}
+            className="inline-flex h-12 min-h-[48px] items-center justify-center rounded-[var(--radius)] border border-[var(--border)] bg-[var(--muted)]/30 px-8 text-sm font-medium text-[var(--foreground)] backdrop-blur-sm transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out hover:border-[var(--accent)]/35 hover:bg-[var(--muted)]/55 hover:shadow-sm active:scale-[0.99]"
           >
             Start a conversation
-          </motion.a>
+          </a>
         </motion.div>
 
         <motion.div
@@ -183,7 +178,7 @@ export function Hero() {
             variants={item}
             initial="hidden"
             animate="show"
-            className="pointer-events-none absolute left-1/2 top-6 z-0 h-[min(440px,96vw)] w-[min(100%,680px)] max-w-full -translate-x-1/2 opacity-[0.28] [mask-image:radial-gradient(ellipse_88%_82%_at_50%_48%,black_30%,transparent_90%)] md:top-8 md:h-[min(480px,88vw)] md:w-[min(100%,700px)] md:opacity-[0.34] lg:pointer-events-auto lg:relative lg:top-auto lg:-translate-x-7 lg:justify-self-start lg:mx-0 lg:h-[min(560px,68vw)] lg:w-full lg:max-w-[560px] xl:h-[min(600px,62vw)] xl:max-w-[600px] xl:-translate-x-9 lg:opacity-100 lg:[mask-image:none]"
+            className="pointer-events-auto absolute left-1/2 top-6 z-0 h-[min(440px,96vw)] w-[min(100%,680px)] max-w-full -translate-x-1/2 touch-manipulation opacity-[0.28] [mask-image:radial-gradient(ellipse_88%_82%_at_50%_48%,black_30%,transparent_90%)] md:top-8 md:h-[min(480px,88vw)] md:w-[min(100%,700px)] md:opacity-[0.34] lg:relative lg:top-auto lg:-translate-x-7 lg:justify-self-start lg:mx-0 lg:h-[min(560px,68vw)] lg:w-full lg:max-w-[560px] xl:h-[min(600px,62vw)] xl:max-w-[600px] xl:-translate-x-9 lg:opacity-100 lg:[mask-image:none]"
           >
             <HeroParticleOrb
               className="h-full w-full min-h-[360px] md:min-h-[400px] lg:min-h-[460px] xl:min-h-[500px]"
