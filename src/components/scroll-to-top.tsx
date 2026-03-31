@@ -27,7 +27,7 @@ export function ScrollToTop() {
 
   return (
     <motion.div
-      className="pointer-events-none fixed bottom-6 right-6 z-[45] md:bottom-8 md:right-8"
+      className="pointer-events-none fixed right-6 z-[45] bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] md:bottom-8 md:right-8"
       initial={false}
       animate={{ opacity: visible ? 1 : 0, y: visible ? 0 : 12 }}
       transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}

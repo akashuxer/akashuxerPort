@@ -54,7 +54,7 @@ export default function Home() {
       <AmbientBackground />
       <Nav />
       <ScrollToTop />
-      <div className="relative z-10 flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden">
+      <div className="relative z-10 flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden pb-[calc(4.25rem+env(safe-area-inset-bottom,0px))] md:pb-0">
         <main className="flex min-w-0 flex-1 flex-col">
           <Hero />
           <Work />
