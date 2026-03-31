@@ -5,15 +5,6 @@ import { Nav } from "@/components/nav";
 import { ScrollProgress } from "@/components/scroll-progress";
 import { ScrollToTop } from "@/components/scroll-to-top";
 
-const BackgroundRippleEffect = dynamic(() =>
-  import("@/components/ui/background-ripple-effect").then(
-    (m) => m.BackgroundRippleEffect
-  )
-);
-
-const Expertise = dynamic(() =>
-  import("@/components/expertise").then((m) => ({ default: m.Expertise }))
-);
 const Work = dynamic(() =>
   import("@/components/work").then((m) => ({ default: m.Work }))
 );
@@ -46,13 +37,11 @@ export default function Home() {
     <>
       <ScrollProgress />
       <AmbientBackground />
-      <BackgroundRippleEffect />
       <Nav />
       <ScrollToTop />
-      <div className="relative z-10 flex min-h-0 flex-1 flex-col">
-        <main className="flex flex-1 flex-col">
+      <div className="relative z-10 flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden">
+        <main className="flex min-w-0 flex-1 flex-col">
           <Hero />
-          <Expertise />
           <Work />
           <About />
           <Experience />

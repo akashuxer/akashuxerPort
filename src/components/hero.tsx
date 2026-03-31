@@ -66,18 +66,18 @@ export function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative px-6 pt-28 pb-20 md:px-8 md:pt-36 md:pb-28"
+      className="relative overflow-x-hidden px-6 pt-28 pb-20 md:px-8 md:pt-36 md:pb-28"
     >
       <motion.div
-        className="mx-auto max-w-7xl"
+        className="mx-auto max-w-7xl min-w-0"
         style={{ y: parallaxY, opacity: parallaxOpacity }}
       >
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(300px,480px)] lg:gap-10 xl:gap-14">
+        <div className="relative grid min-w-0 grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(260px,560px)] lg:gap-2 xl:grid-cols-[minmax(0,1fr)_minmax(280px,620px)] xl:gap-3">
           <motion.div
             variants={container}
             initial="hidden"
             animate="show"
-            className="min-w-0 max-w-4xl"
+            className="relative z-10 min-w-0 max-w-4xl"
           >
         <motion.p
           variants={item}
@@ -178,13 +178,17 @@ export function Hero() {
         </motion.div>
           </motion.div>
 
+          {/* <lg: orb sits behind copy (decorative). lg+: side column + pointer interaction. */}
           <motion.div
             variants={item}
             initial="hidden"
             animate="show"
-            className="relative mx-auto hidden min-h-[min(460px,62vw)] w-full max-w-[480px] lg:block"
+            className="pointer-events-none absolute left-1/2 top-6 z-0 h-[min(440px,96vw)] w-[min(100%,680px)] max-w-full -translate-x-1/2 opacity-[0.28] [mask-image:radial-gradient(ellipse_88%_82%_at_50%_48%,black_30%,transparent_90%)] md:top-8 md:h-[min(480px,88vw)] md:w-[min(100%,700px)] md:opacity-[0.34] lg:pointer-events-auto lg:relative lg:top-auto lg:-translate-x-7 lg:justify-self-start lg:mx-0 lg:h-[min(560px,68vw)] lg:w-full lg:max-w-[560px] xl:h-[min(600px,62vw)] xl:max-w-[600px] xl:-translate-x-9 lg:opacity-100 lg:[mask-image:none]"
           >
-            <HeroParticleOrb className="absolute inset-0 min-h-[380px]" />
+            <HeroParticleOrb
+              className="h-full w-full min-h-[360px] md:min-h-[400px] lg:min-h-[460px] xl:min-h-[500px]"
+              scrollProgress={scrollYProgress}
+            />
           </motion.div>
         </div>
       </motion.div>

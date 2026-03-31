@@ -35,7 +35,7 @@ export default function RootLayout({
       className={`${syne.variable} ${dmSans.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col overflow-x-hidden">
         <ThemeProvider>
           <IntroLoader>{children}</IntroLoader>
           <CustomCursor />

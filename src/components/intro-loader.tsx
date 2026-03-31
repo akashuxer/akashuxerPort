@@ -1,8 +1,9 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { LogoAkashWord } from "@/components/logo-akash-word";
+import { fireWelcomeConfetti } from "@/lib/welcome-confetti";
 
 const INTRO_MS = 3000;
 const STEP_MS = 1000;
@@ -173,6 +174,7 @@ export function IntroLoader({ children }: { children: React.ReactNode }) {
   );
   const reduce = useReducedMotion();
   const [showIntro, setShowIntro] = useState(false);
+  const confettiOnceRef = useRef(false);
 
   useEffect(() => {
     if (!mounted || reduce) return;
@@ -200,7 +202,13 @@ export function IntroLoader({ children }: { children: React.ReactNode }) {
           aria-hidden
         />
       )}
-      <AnimatePresence>
+      <AnimatePresence
+        onExitComplete={() => {
+          if (confettiOnceRef.current) return;
+          confettiOnceRef.current = true;
+          fireWelcomeConfetti();
+        }}
+      >
         {mounted && showIntro && !reduce && (
           <motion.div
             key="intro"

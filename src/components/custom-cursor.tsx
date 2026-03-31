@@ -43,6 +43,8 @@ export function CustomCursor() {
   /** Direct DOM transform — avoids Framer Motion / React scheduling lag under heavy hero canvas. */
   const rootRef = useRef<HTMLDivElement>(null);
   const hoverSyncedRef = useRef(false);
+  const pendingHoverRef = useRef({ x: 0, y: 0 });
+  const hoverRafRef = useRef<number | null>(null);
 
   const updateHoverAt = useCallback((clientX: number, clientY: number) => {
     const hit = document.elementFromPoint(clientX, clientY);
@@ -66,7 +68,15 @@ export function CustomCursor() {
         }
       }
       const last = list[list.length - 1];
-      updateHoverAt(last.clientX, last.clientY);
+      pendingHoverRef.current.x = last.clientX;
+      pendingHoverRef.current.y = last.clientY;
+      if (hoverRafRef.current == null) {
+        hoverRafRef.current = requestAnimationFrame(() => {
+          hoverRafRef.current = null;
+          const { x, y } = pendingHoverRef.current;
+          updateHoverAt(x, y);
+        });
+      }
     },
     [updateHoverAt]
   );
@@ -87,6 +97,8 @@ export function CustomCursor() {
 
     return () => {
       document.body.classList.remove("custom-cursor-active");
+      if (hoverRafRef.current != null) cancelAnimationFrame(hoverRafRef.current);
+      hoverRafRef.current = null;
       window.removeEventListener("pointermove", onPointerLike);
       window.removeEventListener("mousedown", onDown);
       window.removeEventListener("mouseup", onUp);

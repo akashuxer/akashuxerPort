@@ -6,7 +6,6 @@ export type NavKey = "work" | "about" | "testimonials" | "contact";
 
 /** Section order + which nav item should be active while it’s in view. */
 const SECTION_MAP: { id: string; key: NavKey }[] = [
-  { id: "expertise", key: "work" },
   { id: "work", key: "work" },
   { id: "about", key: "about" },
   { id: "experience", key: "about" },
@@ -18,7 +17,7 @@ const SECTION_MAP: { id: string; key: NavKey }[] = [
 
 /**
  * Picks the nav key for the section intersecting a horizontal band below the header
- * (~35% viewport). Hero (above #expertise) counts as Work.
+ * (~35% viewport). Hero (above #work) counts as Work.
  */
 export function useActiveNav(): NavKey {
   const [active, setActive] = useState<NavKey>("work");
@@ -26,8 +25,8 @@ export function useActiveNav(): NavKey {
   useEffect(() => {
     const compute = () => {
       const marker = window.scrollY + window.innerHeight * 0.35;
-      const expertise = document.getElementById("expertise");
-      if (expertise && marker < expertise.offsetTop) {
+      const workSection = document.getElementById("work");
+      if (workSection && marker < workSection.offsetTop) {
         setActive("work");
         return;
       }

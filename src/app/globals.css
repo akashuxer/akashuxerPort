@@ -110,27 +110,6 @@ body {
   }
 }
 
-/* Background ripple grid (components/ui/background-ripple-effect) */
-@keyframes cell-ripple {
-  0% {
-    opacity: 0.35;
-    filter: brightness(1) saturate(1);
-  }
-  45% {
-    opacity: 1;
-    filter: brightness(1.35) saturate(1.15);
-  }
-  100% {
-    opacity: 0.35;
-    filter: brightness(1) saturate(1);
-  }
-}
-
-.animate-cell-ripple {
-  animation: cell-ripple var(--duration, 800ms) ease-out var(--delay, 0ms) 1;
-  animation-fill-mode: none;
-}
-
 /* Testimonials horizontal marquee — duplicated row, pause via animation-play-state on hover */
 @keyframes testimonial-marquee {
   from {
