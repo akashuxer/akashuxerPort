@@ -1,26 +1,180 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Unified corner radius (buttons, cards, chrome) */
+  --radius: 4px;
+  --background: #fafafa;
+  --foreground: #0c0c0f;
+  --foreground-muted: #5c5c66;
+  --card: #ffffff;
+  --muted: #f4f4f5;
+  --border: #e4e4e7;
+  --accent: #6366f1;
+  --accent-secondary: #8b5cf6;
+  --accent-tertiary: #a855f7;
+  --blob-1: rgba(99, 102, 241, 0.35);
+  --blob-2: rgba(139, 92, 246, 0.28);
+  --blob-3: rgba(6, 182, 212, 0.2);
+  --grid-line: rgba(12, 12, 15, 0.06);
+  --shimmer: rgba(99, 102, 241, 0.06);
+}
+
+.dark {
+  --background: #070709;
+  --foreground: #f4f4f5;
+  --foreground-muted: #a1a1aa;
+  --card: #0f0f12;
+  --muted: #18181b;
+  --border: #27272a;
+  --accent: #818cf8;
+  --accent-secondary: #a78bfa;
+  --accent-tertiary: #c084fc;
+  --blob-1: rgba(129, 140, 248, 0.22);
+  --blob-2: rgba(167, 139, 250, 0.18);
+  --blob-3: rgba(34, 211, 238, 0.12);
+  --grid-line: rgba(244, 244, 245, 0.05);
+  --shimmer: rgba(129, 140, 248, 0.04);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  /* Tailwind radius scale → single 4px site-wide */
+  --radius-sm: 4px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+  --radius-2xl: 4px;
+  --radius-3xl: 4px;
+  --radius-4xl: 4px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* smooth caused long anchor scrolls; instant wheel scroll feels snappier for section reveals */
+html {
+  scroll-behavior: auto;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  /* No transition on theme tokens — View Transitions + next-themes handle theme changes.
+     Animating background/color here doubled the work and made theme toggles feel laggy. */
+}
+
+/* Theme: circular reveal from viewport center (expands in all directions). */
+@keyframes theme-reveal-center {
+  from {
+    clip-path: circle(0px at 50% 50%);
+  }
+  to {
+    clip-path: circle(150vmax at 50% 50%);
+  }
+}
+
+@supports (view-transition-name: none) {
+  ::view-transition-group(root) {
+    animation-duration: 0s;
+  }
+
+  ::view-transition-old(root) {
+    animation: none !important;
+    mix-blend-mode: normal;
+  }
+
+  ::view-transition-new(root) {
+    /* Slow, soft ease — very gentle circular reveal */
+    animation: theme-reveal-center 2.35s cubic-bezier(0.33, 0.02, 0.25, 1) both !important;
+    mix-blend-mode: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @supports (view-transition-name: none) {
+    ::view-transition-new(root) {
+      animation: none !important;
+    }
+  }
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+  color: var(--foreground);
+}
+
+@media (pointer: fine) {
+  body.custom-cursor-active,
+  body.custom-cursor-active * {
+    cursor: none !important;
+  }
+}
+
+/* Background ripple grid (components/ui/background-ripple-effect) */
+@keyframes cell-ripple {
+  0% {
+    opacity: 0.35;
+    filter: brightness(1) saturate(1);
+  }
+  45% {
+    opacity: 1;
+    filter: brightness(1.35) saturate(1.15);
+  }
+  100% {
+    opacity: 0.35;
+    filter: brightness(1) saturate(1);
+  }
+}
+
+.animate-cell-ripple {
+  animation: cell-ripple var(--duration, 800ms) ease-out var(--delay, 0ms) 1;
+  animation-fill-mode: none;
+}
+
+/* Testimonials horizontal marquee — duplicated row, pause via animation-play-state on hover */
+@keyframes testimonial-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-testimonial-marquee {
+  animation: testimonial-marquee var(--marquee-duration, 42s) linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-testimonial-marquee {
+    animation: none;
+  }
+}
+
+/*
+  Marquee cards: width matches flex gap (gap-4 = 1rem).
+  Row width = n·w + (n−1)·gap = 100vw (strip is full viewport after full-bleed wrapper).
+*/
+.testimonial-marquee-card {
+  flex: 0 0 auto;
+  width: calc(100vw - 3rem);
+}
+
+@media (min-width: 640px) {
+  .testimonial-marquee-card {
+    width: calc((100vw - 1rem) / 2);
+  }
+}
+
+@media (min-width: 768px) {
+  .testimonial-marquee-card {
+    width: calc((100vw - 2rem) / 3);
+  }
+}
+
+@media (min-width: 1024px) {
+  .testimonial-marquee-card {
+    width: calc((100vw - 3rem) / 4);
+  }
 }
